@@ -7,6 +7,8 @@ let myProgressBar = document.querySelector("#myProgressBar");
 let gif = document.querySelector("#gif");
 let masterSongName = document.querySelector("#masterSongName");
 let songItems = Array.from(document.querySelectorAll(".songItem"));
+let trackCurrentTime = document.querySelector(".current-time");
+let trackDuration = document.querySelector(".duration-time");
 
 let songs = [
   {
@@ -193,10 +195,6 @@ document.querySelector("#previous").addEventListener("click", () => {
   elSongItem.classList.add("fa-circle-pause");
 });
 
-function timeupdate() {
-  let x = document.querySelectorAll(".timestamp").duration;
-}
-
 // Play Pause using Space key
 document.addEventListener("keydown", function (e) {
   // console.log(e);
@@ -210,3 +208,38 @@ document.addEventListener("keydown", function (e) {
 window.onkeydown = function (e) {
   return !(e.keyCode == 32);
 };
+
+// Function to update current time and duration
+const updateCurrentTimeAndDuration = () => {
+  if (audioElement.duration) {
+    let curmins = Math.floor(audioElement.currentTime / 60);
+    let cursecs = Math.floor(audioElement.currentTime - curmins * 60);
+
+    let durmins = Math.floor(audioElement.duration / 60);
+    let dursecs = Math.floor(audioElement.duration - durmins * 60);
+
+    if (dursecs < 10) {
+      dursecs = "0" + dursecs;
+    }
+    if (durmins < 10) {
+      durmins = "0" + durmins;
+    }
+    if (cursecs < 10) {
+      cursecs = "0" + cursecs;
+    }
+    if (curmins < 10) {
+      curmins = "0" + curmins;
+    }
+    trackCurrentTime.innerHTML = curmins + ":" + cursecs;
+    trackDuration.innerHTML = durmins + ":" + dursecs;
+  } else {
+    trackCurrentTime.innerHTML = "00" + ":" + "00";
+    trackDuration.innerHTML = "00" + ":" + "00";
+  }
+};
+
+// Update Timer when the metadata of the audio is loaded
+audioElement.addEventListener("loadedmetadata", updateCurrentTimeAndDuration);
+
+// Update Timer during the time update of the audio
+audioElement.addEventListener("timeupdate", updateCurrentTimeAndDuration);
