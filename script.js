@@ -2,6 +2,7 @@
 
 let songIndex = 0;
 let audioElement = new Audio("songs/1.mp3");
+// let audioElement = document.createElement("audio");
 let masterPlay = document.querySelector("#masterPlay");
 let myProgressBar = document.querySelector("#myProgressBar");
 let gif = document.querySelector("#gif");
@@ -243,3 +244,26 @@ audioElement.addEventListener("loadedmetadata", updateCurrentTimeAndDuration);
 
 // Update Timer during the time update of the audio
 audioElement.addEventListener("timeupdate", updateCurrentTimeAndDuration);
+
+// Autoplay next song //
+audioElement.addEventListener("ended", () => {
+  // Get the next song index
+  let nextSongIndex = (songIndex + 1) % songs.length;
+
+  // Update the song index and audio source
+  songIndex = nextSongIndex;
+  audioElement.src = songs[songIndex].filePath;
+
+  // Update the song name
+  masterSongName.innerText = songs[songIndex].songName;
+
+  // Play the next song
+  audioElement.play();
+
+  makeAllPlays();
+  let nextSongItem = document.querySelector(
+    `.songItem:nth-child(${songIndex + 1}) .songItemPlay`
+  );
+  nextSongItem.classList.remove("fa-circle-play");
+  nextSongItem.classList.add("fa-circle-pause");
+});
